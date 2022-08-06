@@ -17,7 +17,7 @@ def employee():
 
     search = {
         "name": "%" + request.args.get("name", "") + "%",
-        "position": "%" + (Position[request.args.get("position")].value if request.args.get("position") else "") + "%",
+        "position": "%" + (str(Position[request.args.get("position")].value) if request.args.get("position") else "") + "%",
         "role": "%" + request.args.get("role", "") + "%",
         "email": "%" + request.args.get("email", "") + "%",
         "phone": "%" + request.args.get("phone", "") + "%"
