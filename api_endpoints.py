@@ -12,6 +12,17 @@ def serialize(obj):
 # Employee
 @app.route("/api/v1/employees", methods=['GET', "POST"])
 def employee():
+    if request.args.get("position") and request.args.get("position") not in Position.__members__:
+        return jsonify({"count": 0, "items": []}), 200
+
+    search = {
+        "name": "%" + request.args.get("name", "") + "%",
+        "position": "%" + (Position[request.args.get("position")].value if request.args.get("position") else "") + "%",
+        "role": "%" + request.args.get("role", "") + "%",
+        "email": "%" + request.args.get("email", "") + "%",
+        "phone": "%" + request.args.get("phone", "") + "%"
+    }
+
     if request.method == "GET":
         if request.args.get("page") is not None:
             page = request.args.get("page", 1)
@@ -19,7 +30,10 @@ def employee():
             if not page.isnumeric() or int(page) < 1:
                 return jsonify(status="error", message="Argument page should be >= 1"), 400
 
-            paging_query = Employee.query.paginate(page=int(page), per_page=DEFAULT_PAGE_COUNT, error_out=False)
+            paging_query = Employee.query.\
+                            filter(Employee.name.like(search["name"]) & Employee.position.like(search["position"]) & \
+                                   Employee.role.like(search["role"]) & Employee.email.like(search["email"]) & Employee.phone.like(search["phone"])).\
+                            paginate(page=int(page), per_page=DEFAULT_PAGE_COUNT, error_out=False)
 
             paging_next = request.base_url + "?page=" + str(paging_query.next_num) if paging_query.has_next else None
             paging_prev = request.base_url + "?page=" + str(paging_query.prev_num) if paging_query.has_prev else None
@@ -27,10 +41,12 @@ def employee():
             result = {"items": serialize(paging_query.items), "count": len(paging_query.items), "paging": {"next": paging_next, "previous": paging_prev}}
 
         else:
-            items = Employee.query.all()
+            items = Employee.query.\
+                            filter(Employee.name.like(search["name"]) & Employee.position.like(search["position"]) & \
+                                   Employee.role.like(search["role"]) & Employee.email.like(search["email"]) & Employee.phone.like(search["phone"])).all()
             result = {"items": serialize(items), "count": len(items)}
 
-        return jsonify(status="success", **result), 200
+        return jsonify(result), 200
 
     elif request.method == "POST":
         name = request.form.get("name")
@@ -133,20 +149,26 @@ def employee_id_projects_delete(emp_id, project_id):
 
     return jsonify(serialize(employee)), 200
 
-
-# ------------# ------------# ------------# ------------# ------------# ------------# ------------
+# ----------------------------------------------------------------------------------
 
 #Project
 @app.route("/api/v1/projects", methods=["GET", "POST"])
 def project():
     if request.method == "GET":
+        search = {
+            "name": "%" + request.args.get("name", "") + "%",
+            "description": "%" + request.args.get("description", "") + "%",
+        }
+
         if request.args.get("page") is not None:
             page = request.args.get("page", 1)
 
             if not page.isnumeric() or int(page) < 1:
                 return jsonify(status="error", message="Argument page should be >= 1"), 400
 
-            paging_query = Project.query.paginate(page=int(page), per_page=DEFAULT_PAGE_COUNT, error_out=False)
+            paging_query = Project.query.\
+                            filter(Project.name.like(search["name"]) & Project.description.like(search["description"])).\
+                            paginate(page=int(page), per_page=DEFAULT_PAGE_COUNT, error_out=False)
 
             paging_next = request.base_url + "?page=" + str(paging_query.next_num) if paging_query.has_next else None
             paging_prev = request.base_url + "?page=" + str(paging_query.prev_num) if paging_query.has_prev else None
@@ -154,7 +176,7 @@ def project():
             result = {"items": serialize(paging_query.items), "count": len(paging_query.items), "paging": {"next": paging_next, "previous": paging_prev}}
 
         else:
-            items = Project.query.all()
+            items = Project.query.filter(Project.name.like(search["name"]) & Project.description.like(search["description"])).all()
             result = {"items": serialize(items), "count": len(items)}
 
         return jsonify(status="success", **result), 200

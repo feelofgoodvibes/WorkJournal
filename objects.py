@@ -14,9 +14,10 @@ DATABASE = "database.db"
 app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{basedir}/{DATABASE}'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
+API_BASE_URL = "/api/v1/"
 
 # Constants ---------------------------------
-DEFAULT_PAGE_COUNT = 2
+DEFAULT_PAGE_COUNT = 20
 
 # Models ------------------------------------
 
@@ -56,7 +57,7 @@ class Employee(db.Model):
         }
 
         if expand:
-            result = {**result, "projects": [ p.to_dict() for p in self.projects]}
+            result = {**result, "projects": [ {**p.to_dict(), "link": API_BASE_URL + "projects/" + str(p.id)} for p in self.projects]}
 
         return result
 
@@ -80,7 +81,7 @@ class Project(db.Model):
         }
 
         if expand:
-            result = {**result, "employees": [ p.to_dict(expand=False) for p in self.employees]}
+            result = {**result, "employees": [ {**e.to_dict(expand=False), "link": API_BASE_URL + "employees/" + str(e.id)} for e in self.employees]}
 
         return result
 
