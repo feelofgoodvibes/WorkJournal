@@ -10,7 +10,7 @@ def serialize(obj):
     return obj.to_dict()
 
 # Employee
-@app.route("/api/v1/employee", methods=['GET', "POST"])
+@app.route("/api/v1/employees", methods=['GET', "POST"])
 def employee():
     if request.method == "GET":
         if request.args.get("page") is not None:
@@ -58,7 +58,7 @@ def employee():
         return jsonify(status="success", item=serialize(employee)), 200
 
 
-@app.route("/api/v1/employee/<int:emp_id>", methods=["GET", "DELETE", "PUT"])
+@app.route("/api/v1/employees/<int:emp_id>", methods=["GET", "DELETE", "PUT"])
 def employee_id(emp_id):
     if request.method == "GET":
         return serialize(Employee.query.filter(Employee.id==emp_id).first_or_404()), 200
@@ -99,8 +99,45 @@ def employee_id(emp_id):
         db.session.commit()
         return jsonify(status="success", item=serialize(employee)), 200
 
+
+@app.route("/api/v1/employees/<int:emp_id>/projects", methods=["GET", "POST"])
+def employee_id_projects(emp_id):
+    if request.method == "GET":
+        employee = Employee.query.filter(Employee.id==emp_id).first_or_404()
+        return jsonify(count=len(employee.projects), items=serialize(employee.projects)), 200        
+
+    elif request.method == "POST":
+        employee = Employee.query.filter(Employee.id==emp_id).first_or_404()
+        project_id = request.form.get("project_id")
+        
+        if project_id is None or not project_id.isnumeric():
+            return jsonify(status="error", message="Argument project_id should be integer"), 400
+
+        project = Project.query.filter(Project.id==int(project_id)).first_or_404()
+        employee.projects.append(project)
+        db.session.commit()
+
+        return jsonify(status="success", item=serialize(employee)), 200
+
+
+@app.route("/api/v1/employees/<int:emp_id>/projects/<int:project_id>", methods=["DELETE"])
+def employee_id_projects_delete(emp_id, project_id):
+    employee = Employee.query.filter(Employee.id==emp_id).first_or_404()
+    project = Project.query.filter(Project.id==int(project_id)).first_or_404()
+
+    if project not in employee.projects:
+        return jsonify(status="erorr", message="This employee does not have that project"), 400
+
+    employee.projects.remove(project)
+    db.session.commit()
+
+    return jsonify(serialize(employee)), 200
+
+
+# ------------# ------------# ------------# ------------# ------------# ------------# ------------
+
 #Project
-@app.route("/api/v1/project", methods=["GET", "POST"])
+@app.route("/api/v1/projects", methods=["GET", "POST"])
 def project():
     if request.method == "GET":
         if request.args.get("page") is not None:
@@ -136,7 +173,7 @@ def project():
         return jsonify(status="success", item=serialize(project)), 200
 
 
-@app.route("/api/v1/project/<int:project_id>", methods=["GET", "DELETE", "PUT"])
+@app.route("/api/v1/projects/<int:project_id>", methods=["GET", "DELETE", "PUT"])
 def project_id(project_id):
     if request.method == "GET":
         return serialize(Project.query.filter(Project.id==project_id).first_or_404()), 200
