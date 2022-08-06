@@ -21,8 +21,8 @@ def employee():
 
             paging_query = Employee.query.paginate(page=int(page), per_page=DEFAULT_PAGE_COUNT, error_out=False)
 
-            paging_next = request.base_url + "?page=" + str(int(page)+1) if paging_query.has_next else None
-            paging_prev = request.base_url + "?page=" + str(int(page)-1) if paging_query.has_prev else None
+            paging_next = request.base_url + "?page=" + str(paging_query.next_num) if paging_query.has_next else None
+            paging_prev = request.base_url + "?page=" + str(paging_query.prev_num) if paging_query.has_prev else None
 
             result = {"items": serialize(paging_query.items), "count": len(paging_query.items), "paging": {"next": paging_next, "previous": paging_prev}}
 
@@ -39,7 +39,7 @@ def employee():
         email = request.form.get("email")
         phone = request.form.get("phone")
 
-        if name is None:
+        if name is None or len(name) == 0:
             return jsonify(status="error", message="Name argument is required"), 400
 
         if position not in [str(i.value) for i in Position] + [i.name for i in Position]:
@@ -80,6 +80,9 @@ def employee_id(emp_id):
             "phone": request.form.get("phone")
         }
 
+        if name is not None and len(name) == 0:
+            return jsonify(status="error", message="Name argument is required"), 400
+
         if update_fields["position"] is not None:
             if update_fields["position"] not in [str(i.value) for i in Position] + [i.name for i in Position]:
                 return jsonify(status="error", message="Invalid position argument"), 400
@@ -96,5 +99,68 @@ def employee_id(emp_id):
         db.session.commit()
         return jsonify(status="success", item=serialize(employee)), 200
 
-
 #Project
+@app.route("/api/v1/project", methods=["GET", "POST"])
+def project():
+    if request.method == "GET":
+        if request.args.get("page") is not None:
+            page = request.args.get("page", 1)
+
+            if not page.isnumeric() or int(page) < 1:
+                return jsonify(status="error", message="Argument page should be >= 1"), 400
+
+            paging_query = Project.query.paginate(page=int(page), per_page=DEFAULT_PAGE_COUNT, error_out=False)
+
+            paging_next = request.base_url + "?page=" + str(paging_query.next_num) if paging_query.has_next else None
+            paging_prev = request.base_url + "?page=" + str(paging_query.prev_num) if paging_query.has_prev else None
+
+            result = {"items": serialize(paging_query.items), "count": len(paging_query.items), "paging": {"next": paging_next, "previous": paging_prev}}
+
+        else:
+            items = Project.query.all()
+            result = {"items": serialize(items), "count": len(items)}
+
+        return jsonify(status="success", **result), 200
+
+    elif request.method == "POST":
+        name = request.form.get("name")
+        description = request.form.get("description")
+
+        if name is None or len(name) == 0:
+            return jsonify(status="error", message="Name argument is required"), 400
+
+        project = Project(name=name, description=description)
+        db.session.add(project)
+        db.session.commit()
+
+        return jsonify(status="success", item=serialize(project)), 200
+
+
+@app.route("/api/v1/project/<int:project_id>", methods=["GET", "DELETE", "PUT"])
+def project_id(project_id):
+    if request.method == "GET":
+        return serialize(Project.query.filter(Project.id==project_id).first_or_404()), 200
+    
+    elif request.method == "DELETE":
+        db.session.delete(Project.query.filter(Project.id==project_id).first_or_404())
+        db.session.commit()
+
+        return jsonify(status="success"), 200
+
+    elif request.method == "PUT":
+        project = Project.query.filter(Project.id==project_id).first_or_404()
+
+        update_fields = {
+            "name": request.form.get("name"),
+            "description": request.form.get("description")
+        }
+        
+        if update_fields['name'] is not None and len(update_fields['name']) == 0:
+            return jsonify(status="error", message="Name argument is required"), 400
+
+        for name, value in update_fields.items():
+            if value is None: continue
+            setattr(project, name, value)
+
+        db.session.commit()
+        return jsonify(status="success", item=serialize(project)), 200

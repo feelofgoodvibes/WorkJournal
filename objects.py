@@ -129,8 +129,4 @@ def populate_test_set():
 
 
 if __name__ == "__main__":
-    # populate_test_set()
-
-    from pprint import pprint
-
-    pprint(Project.query.filter_by(id=3).first().to_dict(expand=True))
+    populate_test_set()
