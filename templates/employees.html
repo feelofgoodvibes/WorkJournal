@@ -1,0 +1,24 @@
+{% extends 'index.html' %}
+
+{% block body %}
+
+<table class="table align-middle mb-0 bg-white">
+    <thead class="bg-light">
+        <tr>
+            <th>ID</th>
+            <th>Ім'я</th>
+            <th>Email</th>
+        </tr>
+    </thead>
+{% for emp in items %}
+    <tr>
+        <td class="fw-bold">{{ emp.id }}</td>
+        <td>{{ emp.name }}</td>
+        <td>{{ emp.email }}</td>
+        <td></td>
+    </tr>
+
+{% endfor %}
+</table>
+
+{% endblock %}
