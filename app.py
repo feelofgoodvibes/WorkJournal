@@ -9,19 +9,16 @@ from api_endpoints import *
 def index():
     return redirect("/employees")
 
-@app.route("/employees")
-def employees():
-    items = Employee.query.all()
+@app.route("/employees/page/<int:page>")
+def employees(page):
+    items = get_employees(page)
+    return render_template("employees.html", active="employees", items=items["items"])
 
-    return render_template("employees.html", active="employees", items=[i.to_dict() for i in items])
-
-@app.route("/positions")
-def positions():
-    return render_template("positions.html", active="positions")
-
-@app.route("/projects")
-def projects():
-    return render_template("projects.html", active="projects")
+@app.route("/projects/page/<int:page>")
+def projects(page):
+    items = get_projects(page)
+    print(items['items'], flush=True)
+    return render_template("projects.html", active="projects", items=items['items'])
 
 
 if __name__ == "__main__":

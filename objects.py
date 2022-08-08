@@ -1,6 +1,7 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 import os
+import requests
 from enum import Enum
 
 from sqlalchemy import Column, ForeignKey, Table
@@ -14,7 +15,9 @@ DATABASE = "database.db"
 app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{basedir}/{DATABASE}'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
+
 API_BASE_URL = "/api/v1/"
+LOCALHOST_URL = "http://127.0.0.1:5000"
 
 # Constants ---------------------------------
 DEFAULT_PAGE_COUNT = 20
@@ -87,6 +90,17 @@ class Project(db.Model):
 
     def __repr__(self):
         return f"Project-{self.id} {self.name}"
+
+
+
+def get_employees(page=1):
+    data = requests.get(LOCALHOST_URL + API_BASE_URL + "employees", params={"page": page})
+    return data.json()
+
+
+def get_projects(page=1):
+    data = requests.get(LOCALHOST_URL + API_BASE_URL + "projects", params={"page": page})
+    return data.json()
 
 
 def populate_test_set():

@@ -13,9 +13,8 @@
 </head>
 <body>
     <nav>
-        <a href="/employees" class="nav-item{{ ' active' if active == 'employees' }}">Працівники</a>
-        <a href="/positions" class="nav-item{{ ' active' if active == 'positions' }}">Посади</a>
-        <a href="/projects" class="nav-item{{ ' active' if active == 'projects' }}">Проєкти</a>
+        <a href="/employees/page/1" class="nav-item{{ ' active' if active == 'employees' }}">Працівники</a>
+        <a href="/projects/page/1" class="nav-item{{ ' active' if active == 'projects' }}">Проєкти</a>
     </nav>
 
     {% block body %}

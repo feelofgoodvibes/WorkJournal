@@ -1,1 +1,26 @@
 {% extends 'index.html' %}
+
+{% block body %}
+
+<div class="table-wrapper">
+    <table class="table align-middle mb-0 bg-white">
+        <thead>
+            <tr>
+                <th class="text-3">ID</th>
+                <th class="text-3">Назва</th>
+                <th class="text-3">Опис</th>
+            </tr>
+        </thead>
+        {% for project in items %}
+            <tr>
+                <td class="text-2">{{ project.id }}</td>
+                <td class="text-2">{{ project.name }}</td>
+                <td>{{ project.description }}</td>
+            </tr>
+        {% endfor %}
+        <tbody>
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}

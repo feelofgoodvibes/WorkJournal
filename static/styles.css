@@ -7,21 +7,27 @@ nav {
     display: flex;
     flex-direction: row;
     column-gap: 20px;
-    background-color: gainsboro;
     padding: 15px 10px;
+
+    background-color: white;
+    border: 1px solid #e0e0e0;
 }
 
 .nav-item {
-    color: black;
+    color: #4F4F4F;
     text-decoration: none;
 }
 
 .nav-item:hover {
     cursor: pointer;
+    color: unset;
 }
 
 .active {
-    color: rgb(33, 88, 207);
+    background-color: #7a7a7a;
+    color: #f0f0f0;
+    border-radius: 50rem;
+    padding: 0px 9px;
 }
 
 body {
@@ -30,12 +36,14 @@ body {
 
 .table-wrapper {
     padding: 24px;
-    margin: 5px 25px;
+    margin: 10px 35px;
     background-color: white;
     border: 1px solid #e0e0e0;
     border-radius: 0.5rem;
-    width: fit-content;
     white-space: nowrap;
+
+    display: flex;
+    align-items: center;
 }
 
 .text-1 {
