@@ -2,23 +2,33 @@
 
 {% block body %}
 
-<table class="table align-middle mb-0 bg-white">
-    <thead class="bg-light">
-        <tr>
-            <th>ID</th>
-            <th>Ім'я</th>
-            <th>Email</th>
-        </tr>
-    </thead>
-{% for emp in items %}
-    <tr>
-        <td class="fw-bold">{{ emp.id }}</td>
-        <td>{{ emp.name }}</td>
-        <td>{{ emp.email }}</td>
-        <td></td>
-    </tr>
-
-{% endfor %}
-</table>
+<div class="table-wrapper">
+    <table class="table align-middle mb-0 bg-white">
+        <thead>
+            <tr>
+                <th class="text-3">ID</th>
+                <th class="text-3">Ім'я</th>
+                <th class="text-3">Позиція</th>
+                <th class="text-3">Роль</th>
+                <th class="text-3">Email</th>
+                <th class="text-3">Телефон</th>
+                <th class="text-3">Проєктів</th>
+            </tr>
+        </thead>
+        {% for emp in items %}
+            <tr>
+                <td class="text-2">{{ emp.id }}</td>
+                <td class="text-2">{{ emp.name }}</td>
+                <td class="text-3"><span class="pos-{{ emp.position.lower() }}">{{ emp.position }}</span></td>
+                <td class="text-3">{{ emp.role }}</td>
+                <td>{{ emp.email }}</td>
+                <td>{{ emp.phone }}</td>
+                <td>{{ emp.projects|length }}</td>
+            </tr>
+        {% endfor %}
+        <tbody>
+        </tbody>
+    </table>
+</div>
 
 {% endblock %}

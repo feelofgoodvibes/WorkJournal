@@ -13,7 +13,7 @@ def index():
 def employees():
     items = Employee.query.all()
 
-    return render_template("employees.html", active="employees", items=items)
+    return render_template("employees.html", active="employees", items=[i.to_dict() for i in items])
 
 @app.route("/positions")
 def positions():
