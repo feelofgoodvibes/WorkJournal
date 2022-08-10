@@ -11,7 +11,7 @@
                 <th class="text-3">Опис</th>
             </tr>
         </thead>
-        {% for project in items %}
+        {% for project in items['items'] %}
             <tr>
                 <td class="text-2">{{ project.id }}</td>
                 <td class="text-2">{{ project.name }}</td>
@@ -21,6 +21,22 @@
         <tbody>
         </tbody>
     </table>
+</div>
+
+<div class="text-center">
+    {% if items['paging'].previous %}
+    <a class="btn btn-light btn-sm" href="{{ '/'.join(request.base_url.split('/')[:-1]) + '/' + items['paging'].previous.split('page=')[-1] }}">Попередня</a>
+    {% else %}
+    <a class="btn btn-light btn-sm disabled">Попередня</a>
+    {% endif %}
+
+    <a class="btn btn-light btn-sm">{{ items['paging'].current.split("page=")[1] }}</a>
+    
+    {% if items['paging'].next %}
+    <a class="btn btn-light btn-sm" href="{{ '/'.join(request.base_url.split('/')[:-1]) + '/' + items['paging'].next.split('page=')[-1] }}">Наступна</a>
+    {% else %}
+    <a class="btn btn-light btn-sm disabled">Наступна</a>
+    {% endif %}
 </div>
 
 {% endblock %}

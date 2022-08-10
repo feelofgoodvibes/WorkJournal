@@ -37,8 +37,10 @@ def employee():
 
             paging_next = request.base_url + "?page=" + str(paging_query.next_num) if paging_query.has_next else None
             paging_prev = request.base_url + "?page=" + str(paging_query.prev_num) if paging_query.has_prev else None
+            paging_last = request.base_url + "?page=" + str(paging_query.pages)
+            paging_current = request.base_url + "?page=" + page
 
-            result = {"items": serialize(paging_query.items), "count": len(paging_query.items), "paging": {"next": paging_next, "previous": paging_prev}}
+            result = {"items": serialize(paging_query.items), "count": len(paging_query.items), "paging": {"next": paging_next, "previous": paging_prev, "last": paging_last, "current": paging_current}}
 
         else:
             items = Employee.query.\
@@ -172,8 +174,10 @@ def project():
 
             paging_next = request.base_url + "?page=" + str(paging_query.next_num) if paging_query.has_next else None
             paging_prev = request.base_url + "?page=" + str(paging_query.prev_num) if paging_query.has_prev else None
+            paging_last = request.base_url + "?page=" + str(paging_query.pages)
+            paging_current = request.base_url + "?page=" + page
 
-            result = {"items": serialize(paging_query.items), "count": len(paging_query.items), "paging": {"next": paging_next, "previous": paging_prev}}
+            result = {"items": serialize(paging_query.items), "count": len(paging_query.items), "paging": {"next": paging_next, "previous": paging_prev, "last": paging_last, "current": paging_current}}
 
         else:
             items = Project.query.filter(Project.name.like(search["name"]) & Project.description.like(search["description"])).all()

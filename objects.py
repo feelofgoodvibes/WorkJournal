@@ -20,7 +20,7 @@ API_BASE_URL = "/api/v1/"
 LOCALHOST_URL = "http://127.0.0.1:5000"
 
 # Constants ---------------------------------
-DEFAULT_PAGE_COUNT = 20
+DEFAULT_PAGE_COUNT = 2
 
 # Models ------------------------------------
 

@@ -15,7 +15,10 @@
                 <th class="text-3">Проєктів</th>
             </tr>
         </thead>
-        {% for emp in items %}
+
+        <tbody>
+
+        {% for emp in items['items'] %}
             <tr>
                 <td class="text-2">{{ emp.id }}</td>
                 <td class="text-2">{{ emp.name }}</td>
@@ -26,9 +29,24 @@
                 <td>{{ emp.projects|length }}</td>
             </tr>
         {% endfor %}
-        <tbody>
         </tbody>
     </table>
+</div>
+
+<div class="text-center">
+    {% if items['paging'].previous %}
+    <a class="btn btn-light btn-sm" href="{{ '/'.join(request.base_url.split('/')[:-1]) + '/' + items['paging'].previous.split('page=')[-1] }}">Попередня</a>
+    {% else %}
+    <a class="btn btn-light btn-sm disabled">Попередня</a>
+    {% endif %}
+
+    <a class="btn btn-light btn-sm">{{ items['paging'].current.split("page=")[1] }}</a>
+    
+    {% if items['paging'].next %}
+    <a class="btn btn-light btn-sm" href="{{ '/'.join(request.base_url.split('/')[:-1]) + '/' + items['paging'].next.split('page=')[-1] }}">Наступна</a>
+    {% else %}
+    <a class="btn btn-light btn-sm disabled">Наступна</a>
+    {% endif %}
 </div>
 
 {% endblock %}

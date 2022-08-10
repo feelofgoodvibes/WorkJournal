@@ -12,13 +12,12 @@ def index():
 @app.route("/employees/page/<int:page>")
 def employees(page):
     items = get_employees(page)
-    return render_template("employees.html", active="employees", items=items["items"])
+    return render_template("employees.html", active="employees", items=items)
 
 @app.route("/projects/page/<int:page>")
 def projects(page):
     items = get_projects(page)
-    print(items['items'], flush=True)
-    return render_template("projects.html", active="projects", items=items['items'])
+    return render_template("projects.html", active="projects", items=items)
 
 
 if __name__ == "__main__":

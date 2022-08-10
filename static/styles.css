@@ -36,7 +36,7 @@ body {
 
 .table-wrapper {
     padding: 24px;
-    margin: 10px 35px;
+    margin: 10px auto;
     background-color: white;
     border: 1px solid #e0e0e0;
     border-radius: 0.5rem;
@@ -44,6 +44,7 @@ body {
 
     display: flex;
     align-items: center;
+    max-width: 70vw;
 }
 
 .text-1 {
