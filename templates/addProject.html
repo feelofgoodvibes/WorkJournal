@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block head %}
+	<link rel="stylesheet" href="{{ url_for('static', filename='addProject.css') }}">
+	<script src="{{ url_for('static', filename='addProject.js') }}" defer></script>
+{% endblock %}
+
+{% block body %}
+	<div class="title__wrapper">
+		<h2 class="title">Add Project</h2>
+		<a href="/projects"><button type="button" class="btn btn-dark create-btn">Get
+				Projects</button></a>
+	</div>
+	<div class="form__container">
+		<h2 class="form__title">Enter project data</h2>
+		<form class="form">
+			<!-- Name input -->
+			<div class="form-outline mb-4">
+				<input type="text" id="name" class="form-control" placeholder="Name *" required="required" />
+			</div>
+			<!-- Description input -->
+			<div class="form-outline mb-4">
+				<textarea class="form-control" id="description" rows="3" placeholder="Description"></textarea>
+			</div>
+			<!-- Submit button -->
+			<div class="success-msg hidden">
+				<i class="fa fa-check"></i>
+				The project was added successfully
+			</div>
+			<div class="error-msg hidden">
+				<i class="fa fa-times-circle"></i>
+				Error adding project:
+			</div>
+			<button type="submit" class="btn btn-dark btn-block mb-4 btn-add">Add Project</button>
+			<div class="form__reset-div">
+				<p class="form__reset">Clear the form</p>
+			</div>
+		</form>
+	</div>
+	<div class="lds-dual-ring hidden"></div>
+{% endblock %}

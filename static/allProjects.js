@@ -1,7 +1,12 @@
-const url = 'http://127.0.0.1:5000/api/v1/projects';
+const url = '/api/v1/projects';
 let filterLink = ''
 const deleteB = `<button type="button" class="btn btn-danger btn-delete">Delete</button>`
 let currentPage = 1
+const urlPage = `${url}?page=${currentPage}`
+
+function replaceAt(str, index, replacement) {
+    return str.substring(0, index) + replacement + str.substring(index + replacement.length);
+}
 
 const generateTableColums = () => {
     const tr = document.querySelector('.table_tr')
@@ -34,13 +39,17 @@ const getDataFetch = (url) => {
             page.textContent = currentPage
             if (!data.paging.next) {
                 next.classList.add('unactive')
+                next.classList.remove('nextEvent')
             } else {
                 next.classList.remove('unactive')
+                next.classList.add('nextEvent')
             }
             if (!data.paging.previous) {
                 previous.classList.add('unactive')
+                previous.classList.remove('previousEvent')
             } else {
                 previous.classList.remove('unactive')
+                previous.classList.add('previousEvent')
             }
             getProjects(data)
         })
@@ -54,20 +63,30 @@ getDataFetch(`${url}?page=${currentPage}`)
 
 const getNextPage = async () => {
     currentPage++;
-    const response = await fetch(`${url}?page=${currentPage - 1}`);
-    const data = await response.json();
-    const { paging } = data
-    if (!paging.next) return
-    getDataFetch(paging.next)
+    try {
+        const response = filterLink ?
+            await fetch(filterLink) :
+            await fetch(`${url}?page=${currentPage - 1}`)
+        if (filterLink) { filterLink = replaceAt(filterLink, filterLink.indexOf('page') + 5, `${currentPage}`) }
+        const data = await response.json();
+        const { paging } = data
+        if (!paging.next) return
+        getDataFetch(paging.next)
+    } catch (error) { }
 }
 
 const getPrevPage = async () => {
     currentPage--;
-    const response = await fetch(`${url}?page=${currentPage + 1}`);
-    const data = await response.json();
-    const { paging } = data
-    if (!paging.previous) return
-    getDataFetch(paging.previous)
+    try {
+        const response = filterLink ?
+            await fetch(filterLink) :
+            await fetch(`${url}?page=${currentPage + 1}`)
+        if (filterLink) { filterLink = replaceAt(filterLink, filterLink.indexOf('page') + 5, `${currentPage}`) }
+        const data = await response.json();
+        const { paging } = data
+        if (!paging.previous) return
+        getDataFetch(paging.previous)
+    } catch (error) { }
 }
 
 function insertAfter(newNode, existingNode) {
@@ -86,7 +105,7 @@ const getProjects = ({ items }) => {
         const table = document.querySelector('.table')
         const alert = document.createElement('h2')
         alert.classList.add('emptyList')
-        alert.textContent = 'There\'s no projects :('
+        alert.textContent = 'There\'s no projects'
         insertAfter(alert, table)
         return
     }
@@ -94,7 +113,7 @@ const getProjects = ({ items }) => {
     items.forEach(item => {
         tbody.innerHTML += `
     <tr>
-            <th scope="row" id="name">${item.name}</th>
+            <th scope="row" id="name" class="name">${item.name}</th>
             <td id="id">${item.id}</td>
             <td id="description">${item.description}</td>
             <td class="col-md-1">${deleteB}</td>
@@ -106,7 +125,7 @@ const onFilterChoose = (e) => {
     const error = document.querySelector('.error')
     error.classList.add('hidden')
     if (e.target.id) {
-        filterLink = `${url}?${e.target.id}=`
+        filterLink = `${urlPage}&${e.target.id}=`
     }
 }
 
@@ -119,7 +138,7 @@ const onSearch = (e) => {
     }
     if (filterLink.length !== 0) {
         error.classList.add('hidden')
-        filterLink = filterLink.slice(0, filterLink.indexOf('=') + 1)
+        filterLink = filterLink.slice(0, filterLink.lastIndexOf('=') + 1)
         filterLink += search.value
         getDataFetch(filterLink)
     }
@@ -158,5 +177,12 @@ document.querySelector('.pagination').addEventListener('click', (e) => {
         getPrevPage()
     } else if (e.target.classList.contains('next')) {
         getNextPage()
+    }
+})
+
+document.querySelector('.table__body').addEventListener('click', (e) => {
+    if (e.target.classList.contains('name')) {
+        const id = e.target.parentElement.querySelector('#id').textContent
+        location.href = `/projects/${id}`
     }
 })

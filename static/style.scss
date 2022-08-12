@@ -118,3 +118,15 @@ $unactive-color: rgb(163, 163, 163);
         transform: rotate(360deg);
     }
 }
+
+@media screen and (max-width: 820px) {
+    table {
+        font-size: 0.6rem !important;
+    }
+
+    .btn-delete {
+        font-size: 0.6rem !important;
+        width: 50px;
+        height: 25px;
+    }
+}

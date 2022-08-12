@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block head %}
+	<link rel="stylesheet" href="{{ url_for('static', filename='aboutProject.css') }}">
+	<script src="{{ url_for('static', filename='aboutProject.js') }}" defer></script>
+{% endblock %}
+
+{% block body %}
+	<div class="title__wrapper">
+		<h2 class="title">Project</h2>
+		<div class="title__button__wrapper">
+			<a href="/projects"><button type="button" class="btn btn-dark create-btn">Get
+					Projects</button></a>
+			<a href="/projects/new"><button type="button" class="btn btn-dark create-btn">Add
+					Project</button></a>
+		</div>
+	</div>
+	<!-- Account details card-->
+	<div class="card mb-4">
+		<div class="card-header">Project Details</div>
+		<div class="card-body">
+			<form class="form">
+
+			</form>
+
+		</div>
+	</div>
+{% endblock %}

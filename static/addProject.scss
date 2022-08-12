@@ -1,0 +1,129 @@
+@import url('//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css');
+$main-color: #212529;
+
+.container-fluid,
+.container {
+    max-width: 1480px !important;
+    margin: 0 auto !important;
+}
+
+.title__wrapper {
+    display: flex;
+    justify-content: space-between;
+    margin: 30px 0;
+}
+
+.form {
+    &__container {
+        max-width: 600px;
+        margin: 0 auto;
+    }
+
+    &__title {
+        text-align: center;
+    }
+
+    &__reset-div {
+        text-align: center;
+    }
+
+    &__reset {
+        background-size: 200% 100%;
+        background-position: -100%;
+        display: inline-block;
+        padding: 5px 0;
+        position: relative;
+        transition: all 0.3s ease-in-out;
+        margin: 0;
+    }
+
+    &__reset::before {
+        content: '';
+        background: $main-color;
+        display: block;
+        position: absolute;
+        bottom: 2px;
+        left: 0;
+        width: 0;
+        height: 2px;
+        transition: all 0.3s ease-in-out;
+    }
+
+    &__reset:hover {
+        cursor: pointer;
+        background-position: 0;
+    }
+
+    &__reset:hover::before {
+        cursor: pointer;
+        width: 100%;
+    }
+
+    &__reset:active {
+        filter: opacity(.6);
+    }
+
+    border: 1px solid $main-color;
+    border-radius: 6px;
+    padding: 20px;
+    margin: 30px 0;
+}
+
+.hidden {
+    display: none !important;
+}
+
+.btn-add {
+    display: block !important;
+    margin: 0 auto !important;
+}
+
+.success-msg,
+.error-msg {
+    margin: 10px 0;
+    padding: 10px;
+    border-radius: 3px 3px 3px 3px;
+    transition: all 0.3s ease-in-out;
+}
+
+.success-msg {
+    color: #270;
+    background-color: #DFF2BF;
+    transition: all 0.3s ease-in-out;
+}
+
+.error-msg {
+    color: #D8000C;
+    background-color: #FFBABA;
+}
+
+
+//Spinner
+.lds-dual-ring {
+    display: block;
+    width: 80px;
+    height: 80px;
+    margin: 0 auto;
+}
+
+.lds-dual-ring:after {
+    content: " ";
+    display: block;
+    width: 64px;
+    height: 64px;
+    margin: 8px;
+    border-radius: 50%;
+    border: 6px solid $main-color;
+    border-color: $main-color transparent $main-color transparent;
+    animation: lds-dual-ring 1.2s linear infinite;
+}
+
+@keyframes lds-dual-ring {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}

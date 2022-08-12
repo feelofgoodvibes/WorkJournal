@@ -1,6 +1,7 @@
 let idEmployee = location.href.slice(location.href.indexOf('?') + 1)
-const url = `http://127.0.0.1:5000/api/v1/employees/${idEmployee}`
-const allProjects = `http://127.0.0.1:5000/api/v1/projects`
+const url = `/api/v1/employees/${idEmployee}`
+const allProjects = `/api/v1/projects`
+let currentPage = 1
 
 const deleteB = `<button type="button" class="btn btn-danger btn-delete">Delete</button>`
 const addB = `<button type="button" class="btn btn-success btn-add">Add</button>`
@@ -36,14 +37,6 @@ const generateTableColums = (className) => {
 }
 
 const getEmployeeData = ({ id, email, position, role, phone, name }) => {
-    console.log(name)
-    // document.querySelector('#id').value = id
-    // document.querySelector('#first-name').value = name.split(' ')[0]
-    // document.querySelector('#second-name').value = name.split(' ')[1]
-    // document.querySelector('#position').value = position
-    // document.querySelector('#role').value = role
-    // document.querySelector('#email').value = email
-    // document.querySelector('#phone').value = phone
     document.querySelector('.form').innerHTML += `
                     <!-- Form Group (username)-->
                     <!-- Form Row-->
@@ -101,14 +94,6 @@ const getEmployeeData = ({ id, email, position, role, phone, name }) => {
                         <input class="form-control" id="phone" type="tel"
                             value="${phone}" required="required">
                     </div>
-                    <div class="success-msg hidden">
-                    <i class="fa fa-check"></i>
-                    The employee was edited successfully
-                </div>
-                <div class="error-msg hidden">
-                    <i class="fa fa-times-circle"></i>
-                    Error editing employee:
-                </div>
                 <div class="mb-3">
                         <label style="font-size: 25px;" class="mb-1">Projects</label>
                         <table class="table table-hover table1">
@@ -133,6 +118,21 @@ const getEmployeeData = ({ id, email, position, role, phone, name }) => {
                             <tbody class="table__body2">
                             </tbody>
                         </table>
+                        <nav aria-label="Page navigation example">
+                            <ul class="pagination pagination-black justify-content-center">
+                                <li class="page-item"><a class="page-link previous previousEvent" href="#">Prev</a></li>
+                                <li class="page-item"><a class="page-link page" href="#">1</a></li>
+                                <li class="page-item"><a class="page-link next nextEvent" href="#">Next</a></li>
+                            </ul>
+                         </nav>
+                </div>
+                <div class="success-msg hidden">
+                    <i class="fa fa-check"></i>
+                    The employee was edited successfully
+                </div>
+                <div class="error-msg hidden">
+                    <i class="fa fa-times-circle"></i>
+                    Error editing employee:
                 </div>
                     <!-- Save changes button-->
                     <button class="btn btn-dark btn-edit" type="submit">Save changes</button>
@@ -140,21 +140,23 @@ const getEmployeeData = ({ id, email, position, role, phone, name }) => {
     `
     generateTableColums('.table_tr1')
     getProjectsOfEmployee(url)
-    document.querySelector('.table1').addEventListener('click', (e) => {
-        if (e.target.classList.contains('btn-delete')) {
-            deleteProject(e)
-        }
-    })
     document.querySelector('.btn-add-proj').addEventListener('click', (e) => {
         generateTableColums('.table_tr2')
-        getAllProjects(allProjects)
+        getAllProjects(`${allProjects}?page=${currentPage}`)
         e.target.classList.add('hidden')
         document.querySelector('.projects').classList.remove('hidden')
+    })
+    document.querySelector('.pagination').addEventListener('click', (e) => {
+        e.preventDefault()
+        if (e.target.classList.contains('previousEvent')) {
+            getPrevPage()
+        } else if (e.target.classList.contains('nextEvent')) {
+            getNextPage()
+        }
     })
 }
 
 const editEmployee = async (e) => {
-    console.log('/' + generateFormData().get('position') + '/')
     e.preventDefault();
     const editB = document.querySelector('.btn-edit')
     const succesMsg = document.querySelector('.success-msg')
@@ -166,6 +168,7 @@ const editEmployee = async (e) => {
             method: 'PUT',
             body: generateFormData(),
         });
+        console.log(response)
         const json = await response.json();
         if (json.status === 'error') {
             errorMsg.textContent += json.message
@@ -185,12 +188,12 @@ const editEmployee = async (e) => {
 
 
 const generateFormData = () => {
-    let formData = new FormData();
-    let email = document.querySelector('#email').value.trim()
-    let name = `${document.querySelector('#first-name').value} ${document.querySelector('#second-name').value}`
-    let phone = document.querySelector('#phone').value.trim()
-    let position = document.querySelector('#position').value.trim();
-    let role = document.querySelector('#role').value.trim();
+    let formData = new FormData(),
+        email = document.querySelector('#email').value.trim(),
+        name = `${document.querySelector('#first-name').value} ${document.querySelector('#second-name').value}`,
+        phone = document.querySelector('#phone').value.trim(),
+        position = document.querySelector('#position').value.trim(),
+        role = document.querySelector('#role').value.trim();
 
     formData.append('email', email);
     formData.append('name', name);
@@ -232,7 +235,7 @@ const getProjects = ({ projects }) => {
         const table = document.querySelector('.table')
         const alert = document.createElement('h2')
         alert.classList.add('emptyList')
-        alert.textContent = 'There\'s no projects :('
+        alert.textContent = 'There\'s no projects'
         insertAfter(alert, table)
         return
     }
@@ -249,6 +252,9 @@ const getProjects = ({ projects }) => {
 }
 
 const getAllProjects = (url) => {
+    const next = document.querySelector('.next'),
+        previous = document.querySelector('.previous'),
+        page = document.querySelector('.page');
     fetch(url)
         .then(res => {
             if (res.ok) {
@@ -260,6 +266,8 @@ const getAllProjects = (url) => {
             }
         })
         .then(data => {
+            page.textContent = currentPage
+            paginationEventEdit(data, next, previous)
             setAllProjects(data)
         })
         .catch((e) => {
@@ -283,7 +291,7 @@ const setAllProjects = ({ items }) => {
         const table = document.querySelector('.table2')
         const alert = document.createElement('h2')
         alert.classList.add('emptyList2')
-        alert.textContent = 'There\'s no projects :('
+        alert.textContent = 'There\'s no projects'
         insertAfter(alert, table)
         return
     }
@@ -337,18 +345,48 @@ const addProjectToEmployee = async (e) => {
     window.location.reload();
 }
 
-// objectToForm = (data) => {
-//     let formData = new FormData();
-//     formData.append('decription', data.description)
-//     formData.append('name', data.name);
-//     return formData
-// }
+const getNextPage = async () => {
+    currentPage++;
+    const response = await fetch(`${allProjects}?page=${currentPage - 1}`);
+    const data = await response.json();
+    const { paging } = data
+    if (!paging.next) return
+    getAllProjects(paging.next)
+}
+
+const getPrevPage = async () => {
+    currentPage--;
+    const response = await fetch(`${allProjects}?page=${currentPage + 1}`);
+    const data = await response.json();
+    const { paging } = data
+    if (!paging.previous) return
+    getAllProjects(paging.previous)
+}
+
+const paginationEventEdit = (data, next, previous) => {
+    if (!data.paging.next) {
+        next.classList.add('unactive')
+        next.classList.remove('nextEvent')
+    } else {
+        next.classList.remove('unactive')
+        next.classList.add('nextEvent')
+    }
+    if (!data.paging.previous) {
+        previous.classList.add('unactive')
+        previous.classList.remove('previousEvent')
+    } else {
+        previous.classList.remove('unactive')
+        previous.classList.add('previousEvent')
+    }
+}
 
 document.querySelector('.form').addEventListener('submit', editEmployee)
 
-document.querySelector('body').addEventListener('click', (e) => {
+document.querySelector('.form').addEventListener('click', (e) => {
     if (e.target.classList.contains('btn-add')) {
         addProjectToEmployee(e)
     }
-
+    if (e.target.classList.contains('btn-delete')) {
+        deleteProject(e)
+    }
 })

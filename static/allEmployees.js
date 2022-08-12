@@ -1,7 +1,13 @@
-const url = 'http://127.0.0.1:5000/api/v1/employees';
+const url = '/api/v1/employees';
 let filterLink = ''
 const deleteB = `<button type="button" class="btn btn-danger btn-delete">Delete</button>`
 let currentPage = 1
+const urlPage = `${url}?page=${currentPage}`
+
+
+function replaceAt(str, index, replacement) {
+    return str.substring(0, index) + replacement + str.substring(index + replacement.length);
+}
 
 generateTable = () => {
     fetch(url)
@@ -47,13 +53,17 @@ const getDataFetch = (url) => {
             page.textContent = currentPage
             if (!data.paging.next) {
                 next.classList.add('unactive')
+                next.classList.remove('nextEvent')
             } else {
                 next.classList.remove('unactive')
+                next.classList.add('nextEvent')
             }
             if (!data.paging.previous) {
                 previous.classList.add('unactive')
+                previous.classList.remove('previousEvent')
             } else {
                 previous.classList.remove('unactive')
+                previous.classList.add('previousEvent')
             }
             getEmployees(data)
         })
@@ -80,7 +90,10 @@ function insertAfter(newNode, existingNode) {
 const getNextPage = async () => {
     currentPage++;
     try {
-        const response = await fetch(`${url}?page=${currentPage - 1}`);
+        const response = filterLink ?
+            await fetch(filterLink) :
+            await fetch(`${url}?page=${currentPage - 1}`)
+        if (filterLink) { filterLink = replaceAt(filterLink, filterLink.indexOf('page') + 5, `${currentPage}`) }
         const data = await response.json();
         const { paging } = data
         if (!paging.next) return
@@ -91,7 +104,10 @@ const getNextPage = async () => {
 const getPrevPage = async () => {
     currentPage--;
     try {
-        const response = await fetch(`${url}?page=${currentPage + 1}`);
+        const response = filterLink ?
+            await fetch(filterLink) :
+            await fetch(`${url}?page=${currentPage + 1}`)
+        if (filterLink) { filterLink = replaceAt(filterLink, filterLink.indexOf('page') + 5, `${currentPage}`) }
         const data = await response.json();
         const { paging } = data
         if (!paging.previous) return
@@ -111,7 +127,7 @@ const getEmployees = ({ items }) => {
         const table = document.querySelector('.table')
         const alert = document.createElement('h2')
         alert.classList.add('emptyList')
-        alert.textContent = 'There\'s no employee :('
+        alert.textContent = 'There\'s no employee'
         insertAfter(alert, table)
         return
     }
@@ -129,14 +145,13 @@ const getEmployees = ({ items }) => {
             <td class="col-md-1">${deleteB}</td>
         </tr>`
     });
-
 }
 
 const onFilterChoose = (e) => {
     const error = document.querySelector('.error')
     error.classList.add('hidden')
     if (e.target.id) {
-        filterLink = `${url}?${e.target.id}=`
+        filterLink = `${urlPage}&${e.target.id}=`
     }
 }
 
@@ -149,7 +164,7 @@ const onSearch = (e) => {
     }
     if (filterLink.length !== 0) {
         error.classList.add('hidden')
-        filterLink = filterLink.slice(0, filterLink.indexOf('=') + 1)
+        filterLink = filterLink.slice(0, filterLink.lastIndexOf('=') + 1)
         filterLink += search.value
         getDataFetch(filterLink)
     }
@@ -184,9 +199,10 @@ document.querySelector('.table').addEventListener('click', (e) => {
 })
 
 document.querySelector('.pagination').addEventListener('click', (e) => {
-    if (e.target.classList.contains('previous')) {
+    console.log(e.target.classList.contains('nextEvent'))
+    if (e.target.classList.contains('previousEvent')) {
         getPrevPage()
-    } else if (e.target.classList.contains('next')) {
+    } else if (e.target.classList.contains('nextEvent')) {
         getNextPage()
     }
 })
@@ -194,7 +210,7 @@ document.querySelector('.pagination').addEventListener('click', (e) => {
 document.querySelector('.table__body').addEventListener('click', (e) => {
     if (e.target.classList.contains('name')) {
         const id = e.target.parentElement.querySelector('.id').textContent
-        location.href = `http://127.0.0.1:5500/aboutEmployee/index.html?${id}`
+        location.href = `/employees/${id}`
     }
 })
 

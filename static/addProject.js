@@ -1,20 +1,12 @@
-const url = '/api/v1/employees';
+const url = '/api/v1/projects';
 
 const generateFormData = () => {
     let formData = new FormData();
-    let email = document.querySelector('#email').value.trim()
-    let name = `${document.querySelector('#first-name').value} ${document.querySelector('#second-name').value}`
-    let phone = document.querySelector('#phone').value.trim()
-    let selectPos = document.querySelector('#position');
-    let position = selectPos.options[selectPos.selectedIndex].value.trim();
-    let selectRole = document.querySelector('#role');
-    let role = selectRole.options[selectRole.selectedIndex].value.trim();
+    let name = document.querySelector('#name').value,
+        description = document.querySelector('#description').value
 
-    formData.append('email', email);
     formData.append('name', name);
-    formData.append('phone', phone);
-    formData.append('position', position);
-    formData.append('role', role);
+    formData.append('description', description);
     return formData
 }
 
@@ -33,11 +25,11 @@ const postItem = async (e) => {
         const json = await response.json();
         if (json.status === 'error') {
             errorMsg.textContent += json.message
-            addB.textContent = 'Add Employee'
+            addB.textContent = 'Add Project'
             errorMsg.classList.remove('hidden')
         } else {
             document.querySelector('.form').reset();
-            addB.textContent = 'Add Employee'
+            addB.textContent = 'Add Project'
             succesMsg.classList.remove('hidden')
             setTimeout(() => {
                 succesMsg.classList.add('hidden')
