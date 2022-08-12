@@ -1,0 +1,152 @@
+@import url('//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css');
+$main-color: #212529;
+$unactive-color: rgb(163, 163, 163);
+
+.container,
+.container-fluid {
+    max-width: 1480px !important;
+    margin: 0 auto !important;
+}
+
+.title__wrapper {
+    display: flex;
+    justify-content: space-between;
+    margin: 30px 0;
+}
+
+.title__button__wrapper {
+    display: flex;
+    gap: 5px;
+}
+
+.emptyList,
+.emptyList2 {
+    font-size: 1.2rem;
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+
+.card {
+    box-shadow: 0 0.15rem 1.75rem 0 rgb(33 40 50 / 15%);
+    max-width: 800px;
+    margin: 30px auto 0 auto;
+}
+
+.card .card-header {
+    font-weight: 500;
+}
+
+.card-header:first-child {
+    border-radius: 0.35rem 0.35rem 0 0;
+}
+
+.card-header {
+    padding: 1rem 1.35rem;
+    margin-bottom: 0;
+    background-color: rgba(33, 40, 50, 0.03);
+    border-bottom: 1px solid rgba(33, 40, 50, 0.125);
+}
+
+.form-control,
+.dataTable-input {
+    display: block;
+    width: 100%;
+    padding: 0.875rem 1.125rem;
+    font-size: 0.875rem;
+    font-weight: 400;
+    line-height: 1;
+    color: $main-color;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid #c5ccd6;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    border-radius: 0.35rem;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.nav-borders .nav-link.active {
+    color: $main-color;
+    border-bottom-color: $main-color;
+}
+
+.nav-borders .nav-link {
+    color: $main-color;
+    border-bottom-width: 0.125rem;
+    border-bottom-style: solid;
+    border-bottom-color: transparent;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+    padding-left: 0;
+    padding-right: 0;
+    margin-left: 1rem;
+    margin-right: 1rem;
+}
+
+.pagination>li>a {
+    background-color: white;
+    color: $main-color;
+    border: 1px solid $main-color  !important;
+}
+
+.pagination>li>a:focus,
+.pagination>li>a:hover,
+.pagination>li>span:focus,
+.pagination>li>span:hover {
+    background: $main-color;
+    color: #eee;
+}
+
+.pagination>.active>a {
+    color: white;
+    background-color: $main-color  !important;
+}
+
+.pagination>.active>a:hover {
+    background-color: $main-color  !important;
+}
+
+.unactive {
+    background-color: white !important;
+    color: $unactive-color  !important;
+    border: 1px solid $unactive-color  !important;
+}
+
+.unactive:hover {
+    cursor: unset !important;
+}
+
+.success-msg,
+.error-msg {
+    margin: 10px 0;
+    padding: 10px;
+    border-radius: 3px 3px 3px 3px;
+    transition: all 0.3s ease-in-out;
+}
+
+.success-msg {
+    color: #270;
+    background-color: #DFF2BF;
+    transition: all 0.3s ease-in-out;
+}
+
+.error-msg {
+    color: #D8000C;
+    background-color: #FFBABA;
+}
+
+.btn-delete {
+    height: 30px;
+    font-size: .8rem !important;
+}
+
+.btn-add {
+    height: 30px;
+    font-size: .8rem !important;
+}
+
+.hidden {
+    display: none !important;
+}

@@ -1,4 +1,5 @@
 from flask import Flask
+from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 import os
 import requests
@@ -11,6 +12,7 @@ from sqlalchemy.ext.declarative import declarative_base
 
 basedir = os.path.dirname(os.path.realpath(__file__))
 app = Flask(__name__)
+CORS(app)
 DATABASE = "database.db"
 app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{basedir}/{DATABASE}'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False

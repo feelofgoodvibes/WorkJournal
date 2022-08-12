@@ -9,16 +9,22 @@ from api_endpoints import *
 def index():
     return redirect("/employees")
 
-@app.route("/employees/page/<int:page>")
-def employees(page):
-    items = get_employees(page)
-    return render_template("employees.html", active="employees", items=items)
+@app.route("/employees")
+def employees():
+    return render_template("allEmployees.html")
 
-@app.route("/projects/page/<int:page>")
-def projects(page):
-    items = get_projects(page)
-    return render_template("projects.html", active="projects", items=items)
+# @app.route("/employees/<int:emp_id>")
+# def employee_id():
+#     return render_template("")
 
+@app.route("/projects")
+def projects():
+    return render_template("allProjects.html")
+
+
+@app.route("/employees/new")
+def employees_new():
+    return render_template("addEmployee.html")
 
 if __name__ == "__main__":
     app.run(debug=True)

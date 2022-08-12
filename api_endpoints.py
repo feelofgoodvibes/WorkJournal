@@ -4,10 +4,16 @@ from objects import *
 
 
 def serialize(obj):
-    if isinstance(obj, list):
-        return [i.to_dict() for i in obj]
+    def apply_serialization(o1):
+        if isinstance(o1, Project):
+            return o1.to_dict(expand=True)
+        else:
+            return o1.to_dict()
 
-    return obj.to_dict()
+    if isinstance(obj, list):
+        return [apply_serialization(i) for i in obj]
+
+    return apply_serialization(obj)
 
 # Employee
 @app.route("/api/v1/employees", methods=['GET', "POST"])
@@ -98,7 +104,7 @@ def employee_id(emp_id):
             "phone": request.form.get("phone")
         }
 
-        if name is not None and len(name) == 0:
+        if update_fields["name"] is not None and len(update_fields["name"]) == 0:
             return jsonify(status="error", message="Name argument is required"), 400
 
         if update_fields["position"] is not None:
