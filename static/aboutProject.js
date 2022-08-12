@@ -1,4 +1,5 @@
-let idProject = location.href.slice(location.href.indexOf('?') + 1)
+// let idProject = location.href.slice(location.href.indexOf('?') + 1)
+let idProject = location.href.split("/")[location.href.split("/").length-1]
 const url = `/api/v1/projects/${idProject}`
 const allEmployees = `/api/v1/employees`
 let currentPage = 1
